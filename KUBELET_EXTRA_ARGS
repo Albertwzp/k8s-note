@@ -1,0 +1,2 @@
+--fail-swap-on=false 如果swap开启状态, kubelet启动是否失败.
+
