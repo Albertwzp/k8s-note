@@ -1,0 +1,2 @@
+NAME           ENV                                   ARGS
+.metadata.name .spec.template.spec.containers[*].env .spec.template.spec.containers[*].args

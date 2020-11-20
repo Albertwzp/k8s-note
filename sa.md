@@ -11,11 +11,11 @@
 ## SA automation
 ### 服务账户准入控制器(Service account admission controller)
 > Part in api-server
-a. if not set sa in pod, sa is default.
-b. pod must related one sa, otherwise delete pod.
-c. if ImagePullSecrets not in pod, else sa IPS addition pod?
-d. token for api will addition pod.
-f. /var/run/secrets/kubernetes.io/serviceaccount will mount in pod.
+1. if not set sa in pod, sa is default.
+2. pod must related one sa, otherwise delete pod.
+3. if ImagePullSecrets not in pod, else sa IPS addition pod?
+4. token for api will addition pod.
+5. /var/run/secrets/kubernetes.io/serviceaccount will mount in pod.
 
 ---
 ### Token 控制器(Token controller)
