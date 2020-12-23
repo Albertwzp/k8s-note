@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: altermanager-config
+data:
+  altermanager.yaml: |
+    global:
+      smtp_smarthost: smtp.gmail.com:587
+      smtp_from: 
+      smtp_auth_username: maria
+      smtp_auth_identity: maria
+      smtp_auth_password: maria
+      slack_api_url: https://hooks.slack.com/services/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
+    receivers:
+    - name: default-receiver
+      email_config:
+      - to: maintain@maria.com
+        send_resolved: true
+    - name: slack
+      slack_configs:
+      - channel: '#monitoring'
+        send_resolved: true
+    - name: 'web.hook'
+      webhook_configs:
+      - url: 'http://host:port/'
+    route:
+      receiver: 'default-reciver'
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+      group_by: [cluster, altername]
+      routes:
+      - receiver: 'web.hook'
+        match_re:
+          service: mysql|cassandra
+      - receiver: 'pager'
+        group_by: ['altername']
+        match:
+          team: hupu
+    inhibit_rules:
+    templates:

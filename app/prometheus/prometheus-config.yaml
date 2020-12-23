@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  alters: |
+    groups:
+    - name: example
+      rules:
+      - alter: InstanceDown
+        expr: up == 0
+        for: 5m
+        labels:
+          serverity: page
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minites"
+      - alter: APIHighErrorRate
+        expr: api_http_request_latencies_second{quantile="0.5"} > 1
+        for: 10m
+        labels:
+          product: enviroment
+        annotations:
+          summary: "High request latency on {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has a median request latency above 1s (current value: {{ $value }}s)"
+  rules: |
+    groups:
+      - name: example
+        rules:
+        - record: job:http_inprogress_requests:sum
+          expr: sum(http_inprogress_requests) by (job)
+  prometheus.yml: |
+    global:
+      scrape_interval:     15s 
+      evaluation_interval: 15s
+    rule_files:
+    - /etc/config/alters
+    - /etc/config/rules
+    altering:
+      altermanagers:
+      - static_configs:
+          tagets: ['altermanager:9093']
+    scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+      - targets: ['localhost:9090']
+
+    - job_name: 'kubernetes-apiservers'
+      kubernetes_sd_configs:
+      - role: endpoints
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+
+    - job_name: 'kubernetes-kubelet'
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kubernetes_sd_configs:
+      - role: node
+      relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/${1}/proxy/metrics
+      
+    - job_name: 'kubernetes-cadvisor'
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      kubernetes_sd_configs:
+      - role: node
+      relabel_configs:
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+
+#    - job_name: 'kubernetes-nodes'
+#      tls_config:
+#        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      kubernetes_sd_configs:
+#      - role: node
+#
+#    - job_name: 'kubernetes-service'
+#      tls_config:
+#        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      kubernetes_sd_configs:
+#      - role: service
+#   
+#    - job_name: 'kubernetes-endpoints'
+#      tls_config:
+#        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      kubernetes_sd_configs:
+#      - role: endpoints
+#
+#    - job_name: 'kubernetes-ingress'
+#      tls_config:
+#        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      kubernetes_sd_configs:
+#      - role: ingress
+# 
+#    - job_name: 'kubernetes-pods'
+#      tls_config:
+#        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      kubernetes_sd_configs:
+#      - role: pod
