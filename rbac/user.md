@@ -35,3 +35,8 @@ roleRef:
   name: admin
   apiGroup: ""
 ```
+
+## Build anonymous rbac binding for local debug
+```shell
+kubectl create clusterrolebinding system:anonymous --clusterrole=cluster-admin --user=system:anonymous
+```
