@@ -2,14 +2,16 @@
 ## docker manifest
 > unlock experimental feature
 ```shell
-daemon.json
+cat >>daemon.json <<EOF
 "experimental": true
-~/.docker/config.json
+EOF
+cat >>~/.docker/config.json <<EOF
 "experimental": "enabled"
+EOF
 ```
 
-```shell
 > build manifest list & push
+```shell
 docker push image-arch
 docker manifest create imge image-arch ...
 docker manifest push image
