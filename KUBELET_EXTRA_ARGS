@@ -1,2 +1,8 @@
---fail-swap-on=false 如果swap开启状态, kubelet启动是否失败.
-
+KUBELET:
+--fail-swap-on=false	//如果swap开启状态, kubelet启动是否失败.
+--node-status-update-frequency	//kubelet上报到apiserver频率，默认10s
+CONTROLLER-MANAGER:
+--node-monitor-period	//controller-manager每隔多久检查kubelet，默认5s
+--node-monitor-grace-period	//当 node 失联一段时间后，kubernetes 判定 node 为 notready 状态，这段时长通过--node-monitor-grace-period参数配置，默认 40s
+--node-startup-grace-period	//当 node 失联一段时间后，kubernetes 判定 node 为 unhealthy 状态，这段时长通过--node-startup-grace-period参数配置，默认 1m0s
+--pod-eviction-timeout		//当 node 失联一段时间后，kubernetes 开始删除原 node 上的 pod，这段时长是通过--pod-eviction-timeout参数配置，默认 5m0s
