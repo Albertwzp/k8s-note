@@ -13,6 +13,15 @@ echo | openssl s_client -showcerts -connect 127.0.0.1:6443 -servername api 2>/de
 # controller-manager添加如下参数
 - --experimental-cluster-signing-duration=87600h
 # 申请证书更新
+```
+cat >>/etc/kubernetes/kubeadm-config.yaml <<EOF
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+controllerManager:
+  extraArgs:
+    cluster-signing-cert-file: /etc/kubernetes/pki/ca.crt
+    cluster-signing-key-file: /etc/kubernetes/pki/ca.key
+EOF
 kubeadm alpha certs renew all --use-api --config /etc/kubernetes/kubeadm-config.yaml &
 while true
 do
@@ -20,6 +29,7 @@ do
   kubectl certificate approve $csr
   sleep 3
 done
+```
 # 因为所有证书都是用的/etc/kubernetes/pki/ca.{crt,key}签发的，而原来etcd的证书自己也有根证书，所以需要换成前面签发的,可以直接替换，或者修改etcd.yaml的挂载路径
 cp /etc/kubernetes/pki/ca.crt /etc/kubernetes/pki/front-proxy-ca.crt
 cp /etc/kubernetes/pki/ca.key /etc/kubernetes/pki/front-proxy-ca.key
@@ -32,5 +42,9 @@ cp /etc/kubernetes/pki/ca.key /etc/kubernetes/pki/front-proxy-ca.key
 ```
 rm -rf /var/lib/kubelet/pki/ && systemctl restart kubelet
 # 检查kubelet证书到期时间
-openssl x509 -in /var/lib/kubelet/pki/kubelet-client-current.pem -noout -enddate
+openssl x509 -in /var/lib/kubelet/pki/kubelet-client-current.pem -noout [-text|-enddate]
+```
+## 使用CA验证证书
+```
+openssl verify -CAfile /etc/kubernetes/pki/ca.crt /etc/kubernetes/pki/apiserver.crt
 ```
