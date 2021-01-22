@@ -15,3 +15,5 @@ c8595fdadf01 gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:b
 3c822a50d3c6 gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:d27b4495ccc304d5a921d847dd1bce82bd2664ce3e5625b57758ebad03542b5f
 532f8ed1e092 gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:1e3db4f2eeed42d3ef03f41cc3d07c333edab92af3653a530d6d5f370da96ab6
 1867ddec202c gcr.io/knative-releases/knative.dev/serving/vendor/knative.dev/pkg/apiextensions/storageversion/cmd/migrate@sha256:ea103af99c3cdfd952905f4800d609d329535c27c5f0da4c138e7f487924c59d
+
+https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzU4NjcwMTk1Ng==&action=getalbum&album_id=1521935491519004673&scene=173&from_msgid=2247484112&from_itemidx=1&count=3#wechat_redirect
