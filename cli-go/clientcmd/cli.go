@@ -16,5 +16,11 @@ func main() {
   clientset, _ := kubernetes.NewForConfig(config)
   // access the API to list pods
   pods, _ := clientset.CoreV1().Pods("").List(context.TODO(), v1.ListOptions{})
-  fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+  fmt.Printf("%9s: %3d", "Pods", len(pods.Items))
+  deploys, _ := clientset.AppsV1().Deployments("").List(context.TODO(), v1.ListOptions{})
+  fmt.Printf("%9s: %3d", "Deployments", len(deploys.Items))
+  ings, _ := clientset.ExtensionsV1beta1().Ingresses("").List(context.TODO(), v1.ListOptions{})
+  fmt.Printf("%9s: %3d", "Ingresses", len(ings.Items))
+  //fmt.Printf("There are %d ingresses in the cluster\n", len(ings.Items))
 }
+

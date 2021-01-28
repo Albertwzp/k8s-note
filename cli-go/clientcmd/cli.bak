@@ -1,0 +1,24 @@
+package main
+
+import (
+  "context"
+  "fmt"
+  "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "k8s.io/client-go/kubernetes"
+  "k8s.io/client-go/tools/clientcmd"
+)
+
+func main() {
+  // rs := []string{"Nodes", "Pods", "Deployments", "Ingresses"}
+  // uses the current context in kubeconfig
+  // path-to-kubeconfig -- for example, /root/.kube/config
+  config, _ := clientcmd.BuildConfigFromFlags("", "/root/.kube/config")
+  // creates the clientset
+  clientset, _ := kubernetes.NewForConfig(config)
+  // access the API to list pods
+  for _, item := range rs {
+    cmd := "clientset.CoreV1().
+    item, _ := clientset.CoreV1().item("").List(context.TODO(), v1.ListOptions{})
+    fmt.Printf("%s:\t%d", item, len(item.Items))
+  }
+}
