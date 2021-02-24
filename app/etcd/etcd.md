@@ -6,6 +6,10 @@ export ETCDCTL_CACERT=/PATH/etcd/ca.crt
 export ETCDCTL_CERT=/PATH/etcd/server.crt
 export ETCDCTL_KEY=/PATH/etcd/server.key
 export ETCDCTL_API=3
+# get
+etcdctl get /tshift/clusters/ --prefix --keys-only
+etcdctl get /tshift/clusters/global |tail -1 |jq
+# backup & restore
 etcdctl -w table  endpoint status
 etcdctl snapshot save /backup/etcd-snapshot-`date +%Y%m%d`.db
 etcdctl snapshot restore /backup/etcd-snapshot-20210122.db --data-dir=/var/lib/etcd
