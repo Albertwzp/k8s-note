@@ -21,7 +21,7 @@ kubectl --context="${CTX_CLUSTER1}" create secret generic cacerts -n istio-syste
 ## install istio
 ```shell
 export CTX_CLUSTER1=box
-export CTX_CLUSTER2=box89
+export CTX_CLUSTER2=tke
 
 cat <<EOF |istioctl install --context="${CTX_CLUSTER1}" -f -
 apiVersion: install.istio.io/v1alpha1

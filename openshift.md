@@ -12,6 +12,9 @@ tar -xvf crc-linux-amd64.tar.xz
 ./crc setup
 ./crc start --log-level debug
 eval $(./crc oc-env)
+# 查询用户及登陆
+crc console --credentials
+# 登陆平台终端
 oc login -u developer https://api.crc.testing:6443
 oc get co
 ```
