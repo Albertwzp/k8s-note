@@ -12,4 +12,9 @@ kubectl get pods --all-namespaces -o go-template --template="{{range .items}}{{r
 ## taint
 kubectl taint node --all node-role.kubernetes.io/master=:NoSchedule
 kubectl taint node --all node-role.kubernetes.io/master-
-
+## get crd by ns
+kubectl api-resources -o name --verbs=list --namespaced | xargs -n 1 kubectl get --show-kind --ignore-not-found -n $NS
+## clean Terminating ns
+kubectl  delete ns $NS --force --grace-period=0
+kubectl  get ns $NS  -o json > ${NS}.json 		//delete spec.finalizers value
+curl --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key -k -H "Content-Type:application/json" -X PUT --data-binary @${NS}.json https://x.x.x.x:6443/api/v1/namespaces/${NS}/finalize

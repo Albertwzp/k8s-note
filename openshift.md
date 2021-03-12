@@ -22,4 +22,7 @@ oc get co
 ```shell
 # Login VM
 ssh -p22  -i ~/.crc/machines/crc/id_ecdsa core@$(./crc ip)
+# Login Console
+>set Haproxy & hosts
+https://console-openshift-console.apps-crc.testing
 ```
