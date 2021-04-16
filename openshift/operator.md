@@ -3,6 +3,7 @@
 ClusterServiceVersion csv
 Subscription sub
 InstallPlan ip
+Cluster Version Operator cvo
 
 # Install Operator by CLI
 ```shell
